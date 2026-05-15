@@ -1,0 +1,44 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  background-color: rgb(29, 29, 29);
+  color: white;
+}
+h2 {
+  color: tomato;
+  font-style: italic;
+}
+ul {
+  list-style: none;
+  padding: 0 1rem;
+}
+li {
+  font-weight: 700;
+}
+.error {
+  color: red;
+  background: lightgrey;
+  font-size: 20px;
+  border-style: solid;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+.success {
+  color: green;
+  background: lightgrey;
+  font-size: 20px;
+  border-style: solid;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+  padding: 1rem 3rem;
+}
