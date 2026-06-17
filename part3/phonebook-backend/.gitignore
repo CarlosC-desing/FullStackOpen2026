@@ -1,12 +1,8 @@
-# Dependencias
-node_modules/
+node_modules
 
-# Variables de entorno (¡Muy importante por seguridad!)
 .env
 
-# Archivos de sistema (OS)
 .DS_Store
 Thumbs.db
 
-# Logs
 npm-debug.log*
