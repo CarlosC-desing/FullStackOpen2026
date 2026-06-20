@@ -1,9 +1,3 @@
-/*
- ======================
-//     3.13         //
-=====================
-*/
-
 import mongoose from "mongoose";
 
 mongoose.set('strictQuery', false)
@@ -21,8 +15,23 @@ mongoose.connect(url)
     })
 
 const personSchema = new mongoose.Schema({
-    name: String,
-    number: String
+    name: {
+        type: String,
+        minLength: 3,
+        required: true,
+    },
+    number: {
+        type: String,
+        required: true,
+        validate: {
+            validator: function (v) {
+                if (v.length < 8) return false;
+                return /^\d{2,3}-\d+$/.test(v);
+            },
+            message: props => `${props.value} is not a valid phone number! It must be at least 8 characters long and formatted as XX-XXXXX or XXX-XXXXX.`
+        }
+
+    }
 })
 
 personSchema.set('toJSON', {

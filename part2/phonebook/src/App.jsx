@@ -70,15 +70,26 @@ const App = () => {
         name: newName,
         number: newPhone,
       };
-      contactsService.createContact(newPerson).then((returnedPerson) => {
-        setNotification({ message: `Added ${newName}`, type: "success" });
-        setTimeout(() => {
-          setNotification({ message: null, type: null });
-        }, 5000);
-        setPersons(persons.concat(returnedPerson));
-        setNewName("");
-        setNewPhone("");
-      });
+      contactsService
+        .createContact(newPerson)
+        .then((returnedPerson) => {
+          setNotification({ message: `Added ${newName}`, type: "success" });
+          setTimeout(() => {
+            setNotification({ message: null, type: null });
+          }, 5000);
+          setPersons(persons.concat(returnedPerson));
+          setNewName("");
+          setNewPhone("");
+        })
+        .catch((error) => {
+          setNotification({
+            message: error.response.data.error,
+            type: "error",
+          })
+          setTimeout(() => {
+            setNotification({ message: null, type: null })
+          }, 3000);
+        });
     }
   };
 
