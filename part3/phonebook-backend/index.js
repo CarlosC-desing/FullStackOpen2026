@@ -1,24 +1,23 @@
 import 'dotenv/config'
-import express, { request, response } from 'express'
-import Person from './models/person.js';
-import cors from 'cors'
-import morgan from 'morgan';
-const app = express();
+import express from 'express'
+import Person from './models/person.js'
+import morgan from 'morgan'
+const app = express()
 
-app.use(express.json());
+app.use(express.json())
 
-app.use(express.static("dist"));
+app.use(express.static('dist'))
 
-morgan.token("body", (request, response) => {
-  const body = request.body;
-  return JSON.stringify(body);
-});
+morgan.token('body', (request) => {
+  const body = request.body
+  return JSON.stringify(body)
+})
 
 app.use(
-  morgan(":method :url :status :res[content-length] - :response-time ms :body"),
-);
+  morgan(':method :url :status :res[content-length] - :response-time ms :body'),
+)
 
-const errorHandler = (error, request, response, next) => {
+const errorHandler = (error, _request, response, next) => {
   console.log(error.message)
 
   if (error.name === 'CastError') {
@@ -30,24 +29,26 @@ const errorHandler = (error, request, response, next) => {
   next(error)
 }
 
-app.get("/api/persons", (request, response) => {
+app.get('/api/persons', (_request, response, next) => {
   Person.find({})
     .then(people => {
       response.json(people)
     })
-});
+    .catch(error => next(error))
+})
 
-app.get("/info", (request, response) => {
-  const dateInfo = new Date();
+app.get('/info', (_request, response, next) => {
+  const dateInfo = new Date()
   Person.countDocuments({})
     .then(persons => {
       response.send(`
       <p>Phonebook has info for ${persons} people</p>
-      <p>${dateInfo}</p>`);
+      <p>${dateInfo}</p>`)
     })
-});
+    .catch(error => next(error))
+})
 
-app.get("/api/persons/:id", (request, response, next) => {
+app.get('/api/persons/:id', (request, response, next) => {
   Person.findById(request.params.id)
     .then(person => {
       if (person) {
@@ -57,32 +58,32 @@ app.get("/api/persons/:id", (request, response, next) => {
       }
     })
     .catch(error => next(error))
-});
+})
 
-app.delete("/api/persons/:id", (request, response, next) => {
+app.delete('/api/persons/:id', (request, response, next) => {
   Person.findByIdAndDelete(request.params.id)
-    .then(result => {
+    .then(() => {
       response.status(204).end()
     })
     .catch(error => next(error))
-});
+})
 
 
-app.post("/api/persons", (request, response, next) => {
-  const body = request.body;
+app.post('/api/persons', (request, response, next) => {
+  const body = request.body
 
   if (!body.name || !body.number) {
     return response.status(400).json({
-      error: "Content missing",
-    });
+      error: 'Content missing',
+    })
   }
 
   Person.findOne({ name: body.name })
     .then(existingPerson => {
       if (existingPerson) {
         return response.status(400).json({
-          error: "name must be unique",
-        });
+          error: 'name must be unique',
+        })
       } else {
         const person = new Person({
           name: body.name,
@@ -95,10 +96,11 @@ app.post("/api/persons", (request, response, next) => {
           })
           .catch(error => next(error))
       }
-    });
-});
+    })
+    .catch(error => next(error))
+})
 
-app.put("/api/persons/:id", (request, response, next) => {
+app.put('/api/persons/:id', (request, response, next) => {
   const body = request.body
 
   const person = {
@@ -113,7 +115,7 @@ app.put("/api/persons/:id", (request, response, next) => {
     .catch(error => next(error))
 })
 
-const unknownEndpoint = (request, response) => {
+const unknownEndpoint = (_request, response) => {
   response.status(404).send({ error: 'unknown endpoint' })
 }
 
@@ -121,7 +123,7 @@ app.use(unknownEndpoint)
 
 app.use(errorHandler)
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+  console.log(`Server running on port ${PORT}`)
+})
